@@ -1,34 +1,37 @@
 import tensorflow as tf
-from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.layers import Flatten, Dense, Conv2D, MaxPooling2D
 
-# Load and preprocess the MNIST dataset
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+# Load the data
+mnist = tf.keras.datasets.mnist
+(train_images, train_labels),(test_images, test_labels) = mnist.load_data()
 
-# Normalize pixel values to range between 0 and 1
-x_train = x_train / 255.0
-x_test = x_test / 255.0
+# Reshaping and Normalizing
+train_images = train_images.reshape(60000, 28, 28, 1)
+test_images = test_images.reshape(10000, 28, 28, 1)
 
-# Expand dimensions to match the input shape expected by CNN (add a channel dimension)
-x_train = tf.expand_dims(x_train, axis=-1)
-x_test = tf.expand_dims(x_test, axis=-1)
+train_images = train_images / 255.0
+test_images = test_images / 255.0
 
-# Create the CNN model
+# Build the model
 model = Sequential()
 model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
-model.add(MaxPooling2D((2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(MaxPooling2D((2, 2)))
+model.add(MaxPooling2D(2, 2))
 model.add(Flatten())
-model.add(Dense(64, activation='relu'))
+model.add(Dense(128, activation='relu'))
 model.add(Dense(10, activation='softmax'))
 
-# Compile the model
-model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
 
 # Train the model
-model.fit(x_train, y_train, epochs=10, batch_size=32, validation_data=(x_test, y_test))
+model.fit(train_images, train_labels, epochs=10)
 
-# Save the trained model
-model.save('mnist_model.h5')
+# Evaluate the model
+model.evaluate(test_images, test_labels)
+
+# Save the model
+model.save('mnist.h5')
+
+
