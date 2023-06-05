@@ -19,7 +19,7 @@ WHITE = (255, 255, 255)
 drawing = False
 last_pos = (0, 0)
 canvas = pygame.Surface((WIDTH, HEIGHT))
-canvas.fill(BLACK)
+canvas.fill(WHITE)
 
 # Function to preprocess and predict the drawn digit
 def predict_digit(image):
@@ -46,11 +46,11 @@ while running:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             drawing = True
-            pygame.draw.circle(canvas, WHITE, event.pos, 10)
+            pygame.draw.circle(canvas, BLACK, event.pos, 10)
             last_pos = event.pos
         elif event.type == pygame.MOUSEMOTION:
             if drawing:
-                pygame.draw.line(canvas, WHITE, last_pos, event.pos, 20)
+                pygame.draw.line(canvas, BLACK, last_pos, event.pos, 20)
                 last_pos = event.pos
         elif event.type == pygame.MOUSEBUTTONUP:
             drawing = False
@@ -58,7 +58,7 @@ while running:
 
             # Display the predicted digit on the canvas
             font = pygame.font.Font(None, 120)
-            text = font.render(str(digit), True, WHITE)
+            text = font.render(str(digit), True, BLACK)
             text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
             canvas.blit(text, text_rect)
 
